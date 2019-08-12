@@ -35,6 +35,7 @@ object Chapter03 {
     /**
       * A pure but not necessarily an efficient implementation.
       */
+    @tailrec
     def hasSubSequence[A](sup: List[A], sub: List[A]): Boolean = {
       @tailrec
       def hasPrefix[B](list: List[B], pref: List[B]): Boolean = {
