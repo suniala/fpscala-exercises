@@ -58,6 +58,8 @@ class Chapter05Spec extends FunSpec with Matchers {
       toList(take(from(2), 3)) shouldEqual 2 :: 3 :: 4 :: Nil
 
       toList(takeWhile(from(6))(_ < 9)) shouldEqual 6 :: 7 :: 8 :: Nil
+      // takeWhile should be non-strict and not evaluate the whole input stream
+      toList(take(takeWhile(from(6))(_ => true), 3)) shouldEqual 6 :: 7 :: 8 :: Nil
 
       toList(zipWith(from(2), 0), 3) shouldEqual (2, 0) :: (3, 0) :: (4, 0) :: Nil
 

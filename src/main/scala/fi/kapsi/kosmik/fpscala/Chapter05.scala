@@ -85,12 +85,15 @@ object Chapter05 {
       }
     })
 
-    def takeWhile[A](as: Stream[A])(p: A => Boolean): Stream[A] = unfold(as) {
-      case Empty => None
-      case Cons(h, t) =>
-        if (p(h())) Some((h(), takeWhile(t())(p)))
-        else None
-    }
+    def takeWhile[A](as: Stream[A])(p: A => Boolean): Stream[A] =
+      unfold(() => as)(stateThunk => {
+        stateThunk() match {
+          case Empty => None
+          case Cons(h, t) =>
+            if (p(h())) Some((h(), () => takeWhile(t())(p)))
+            else None
+        }
+      })
 
     def zipWith[A, B](as: Stream[A], b: B): Stream[(A, B)] = unfold(as) {
       case Empty => None
