@@ -4,6 +4,21 @@ import fi.kapsi.kosmik.fpscala.Chapter05._
 import org.scalatest.{FunSpec, Matchers}
 
 class Chapter05Spec extends FunSpec with Matchers {
+  describe("Exercise 04") {
+    import Chapter05.Ex04._
+    // Let's cheat a bit and use functions from following exercises
+    import Chapter05.Ex09.from
+    import Chapter05.Ex13.take
+
+    it("forAll") {
+      forAll(take(from(1), 0))(_ => false) shouldBe true
+      forAll(take(from(1), 1))(_ => false) shouldBe false
+      forAll(take(from(1), 9))(_ < 10) shouldBe true
+      forAll(from(1))(_ => false) shouldBe false
+      forAll(from(1))(_ < 9) shouldBe false
+    }
+  }
+
   describe("Exercise 08") {
     import Chapter05.Ex08._
 
@@ -68,6 +83,28 @@ class Chapter05Spec extends FunSpec with Matchers {
       toList(zipAll(take(from(3), 4), take(from(7), 2))) shouldEqual (Some(3), Some(7)) :: (Some(4), Some(8)) :: (Some(5), None) :: (Some(6), None) :: Nil
       toList(zipAll(take(from(3), 2), take(from(7), 3))) shouldEqual (Some(3), Some(7)) :: (Some(4), Some(8)) :: (None, Some(9)) :: Nil
       toList(take(zipAll(from(3), from(7)), 2)) shouldEqual (Some(3), Some(7)) :: (Some(4), Some(8)) :: Nil
+    }
+  }
+
+  describe("Exercise 14") {
+    import Chapter05.Ex14._
+    import Chapter05.Ex13.take
+    import Chapter05.Ex12.from
+
+    it("startsWith should be true on matching infinite and finite streams") {
+      startsWith(from(1))(take(from(1), 3)) shouldBe true
+    }
+
+    it("startsWith should be false on matching finite and infinite streams") {
+      startsWith(take(from(1), 2))(from(1)) shouldBe false
+    }
+
+    it("startsWith should be false on non-matching infinite and infinite streams") {
+      startsWith(from(1))(from(2)) shouldBe false
+    }
+
+    it("startsWith should be true on matching finite streams of same length") {
+      startsWith(take(from(1), 4))(take(from(1), 4)) shouldBe true
     }
   }
 

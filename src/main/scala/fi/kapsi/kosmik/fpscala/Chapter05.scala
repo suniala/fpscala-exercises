@@ -31,6 +31,15 @@ object Chapter05 {
 
   def toList[A](s: Stream[A]): List[A] = toList(s, Int.MaxValue)
 
+  object Ex04 {
+    def forAll[A](s: Stream[A])(p: A => Boolean): Boolean = {
+      s match {
+        case Empty => true
+        case Cons(h, t) => if (!p(h())) false else forAll(t())(p)
+      }
+    }
+  }
+
   object Ex08 {
     def constant[A](a: A): Stream[A] = cons(a, constant(a))
   }
@@ -113,6 +122,28 @@ object Chapter05 {
           }
         }
       )
+  }
+
+  object Ex14 {
+
+    import Ex04._
+    import Ex13._
+
+    def startsWith[A](stream: Stream[A])(prefix: Stream[A]): Boolean = {
+      val zippedUntilPrefixEnds =
+        takeWhile(zipAll(stream, prefix))({ case (so, po) => (so.isDefined && po.isDefined) || (so.isEmpty && po.isDefined) })
+
+      forAll(zippedUntilPrefixEnds)(
+        { case (so, po) =>
+          so match {
+            case None => false
+            case Some(s) => po match {
+              case None => true
+              case Some(p) => s == p
+            }
+          }
+        })
+    }
   }
 
 }
